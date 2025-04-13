@@ -234,6 +234,7 @@ public class EmployeeGUI extends JFrame {
     }
 
     // Main
+    // Uses mock repo for now
     public static void main(String[] args) {
         MockEmployeeRepository mockRepo = new MockEmployeeRepository();
         EmployeeService service = new EmployeeService(mockRepo);
