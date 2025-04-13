@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EmployeeService {
-    private final EmployeeRepository repository;
+    EmployeeRepository repository;
     
     public EmployeeService(EmployeeRepository repository) {
         this.repository = repository;
