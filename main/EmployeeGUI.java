@@ -172,21 +172,81 @@ public class EmployeeGUI extends JFrame {
         }
     }
 
-    /* 
-    * Method to update an existing employee’s name and SSN.
-    * Prompts for the employee ID, new name, and new SSN.
-    */
+    /**
+     * Method to update an employee's data.
+     * User is prompted to update name and SSN, with the option to skip each field.
+     */
     private void updateEmployeeData() {
         try {
-            int id = Integer.parseInt(JOptionPane.showInputDialog("Enter Employee ID:"));
-            String newName = JOptionPane.showInputDialog("Enter New Name:");
-            String newSsn = JOptionPane.showInputDialog("Enter New SSN:");
-            boolean success = service.updateEmployeeData(id, newName, newSsn);
-            outputArea.append(success ? "Employee updated.\n" : "Employee not found.\n");
+            
+            String idStr = JOptionPane.showInputDialog("Enter Employee ID to update:");
+            if (idStr == null) return; // User hits cancel
+            int id = Integer.parseInt(idStr);
+
+            List<Employee> results = service.searchEmployee(String.valueOf(id));
+
+            if (results.isEmpty()) {
+                outputArea.append("Employee not found.\n");
+                return;
+            }
+
+            Employee e = results.get(0);
+
+            // Name update
+            int nameChoice = JOptionPane.showOptionDialog(
+                this,
+                "Do you want to update the name? Current: " + e.getName(),
+                "Update Name",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"Update", "Skip"},
+                "Skip"
+            );
+
+            if (nameChoice == JOptionPane.YES_OPTION) {
+                String newName = JOptionPane.showInputDialog("Enter New Name:");
+                if (newName != null && !newName.trim().isEmpty()) {
+                    e.setName(newName.trim());
+                }
+            }
+
+            // SSN update
+            int ssnChoice = JOptionPane.showOptionDialog(
+                this,
+                "Do you want to update the SSN? Current: " + formatSSN(e.getSsn()),
+                "Update SSN",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                new Object[]{"Update", "Skip"},
+                "Skip"
+            );
+
+            if (ssnChoice == JOptionPane.YES_OPTION) {
+                while (true) {
+                    String newSsn = JOptionPane.showInputDialog("Enter New SSN (9 digits, no dashes):");
+                    if (newSsn == null || newSsn.trim().isEmpty()) break; // user canceled or left it blank
+                    if (isValidSSN(newSsn)) {
+                        e.setSsn(newSsn.trim());
+                        break;
+                    } else {
+                        showError("Invalid SSN — must be exactly 9 digits.");
+                    }
+                }
+            }
+
+            // Save updated employee
+            ((MockEmployeeRepository) service.getClass().getDeclaredField("repository").get(service)).save(e);
+            outputArea.append("✅ Employee updated.\n");
+
+        } catch (NumberFormatException ex) {
+            showError("Invalid employee ID.");
         } catch (Exception ex) {
-            showError("Invalid input.");
+            showError("Error updating employee: " + ex.getMessage());
         }
     }
+
 
     /* 
     * Method to raise salaries for employees within a specified salary range.
@@ -194,15 +254,29 @@ public class EmployeeGUI extends JFrame {
     */
     private void raiseSalaryByRange() {
         try {
-            double min = Double.parseDouble(JOptionPane.showInputDialog("Minimum Salary:"));
-            double max = Double.parseDouble(JOptionPane.showInputDialog("Maximum Salary:"));
-            double percent = Double.parseDouble(JOptionPane.showInputDialog("Increase Percentage:"));
+            String minStr = JOptionPane.showInputDialog("Minimum Salary:");
+            if (minStr == null) return;
+    
+            String maxStr = JOptionPane.showInputDialog("Maximum Salary:");
+            if (maxStr == null) return;
+    
+            String percentStr = JOptionPane.showInputDialog("Increase Percentage:");
+            if (percentStr == null) return;
+    
+            double min = Double.parseDouble(minStr);
+            double max = Double.parseDouble(maxStr);
+            double percent = Double.parseDouble(percentStr);
+    
             service.updateEmployeeSalaryRange(min, max, percent);
             outputArea.append("Salaries updated for range " + min + " - " + max + "\n");
+    
+        } catch (NumberFormatException ex) {
+            showError("Please enter valid numeric values.");
         } catch (Exception ex) {
-            showError("Invalid input.");
+            showError("Unexpected error: " + ex.getMessage());
         }
     }
+    
 
     /* 
     * Calculates and displays total pay for all employees with a given job title.
