@@ -60,6 +60,9 @@ public class EmployeeGUIFX extends Application {
         root.setCenter(outputArea);
 
         Scene scene = new Scene(root, 800, 500);
+        scene.getStylesheets().add(new java.io.File("main/style.css").toURI().toString());
+
+
         primaryStage.setScene(scene);
         primaryStage.show();
     }
