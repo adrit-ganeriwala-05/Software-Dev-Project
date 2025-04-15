@@ -1,3 +1,4 @@
+package main;
 
 // Employee.java
 public class Employee {
@@ -16,7 +17,7 @@ public class Employee {
         this.jobTitle = jobTitle;
         this.division = division;
     }
-    
+
     // Getters and Setters
     public int getEmpId() { return empId; }
     public String getName() { return name; }
@@ -28,4 +29,13 @@ public class Employee {
     
     public void setName(String name) { this.name = name; }
     public void setSsn(String ssn) { this.ssn = ssn; }
+
+    public void setJobTitle(String jobTitle) {
+        this.jobTitle = jobTitle;
+    }
+    
+    public void setDivision(String division) {
+        this.division = division;
+    }
+    
 }
