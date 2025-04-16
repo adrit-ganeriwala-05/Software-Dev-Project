@@ -14,15 +14,23 @@ This is a simple Employee Management System built using JavaFX. It allows users 
 - Java JDK 17 or later
 - JavaFX SDK 17.0.14 (download from [https://gluonhq.com/products/javafx/](https://gluonhq.com/products/javafx/))
 
-> ⚠️ Ensure your JavaFX SDK is extracted to a known location, e.g., `~/Desktop/javafx-sdk-17.0.14`.
+> Ensure JavaFX SDK is extracted to a known location, e.g., `~/Desktop/javafx-sdk-17.0.14`.
 
 ## Folder Structure
-SDD Project/ ├── bin/ # Compiled class files ├── main/ # Java source files │ ├── EmployeeGUIFX.java │ ├── Employee.java │ ├── EmployeeService.java │ ├── MockEmployeeRepository.java │ ├── EmployeeRepository.java │ └── style.css
+SDD Project/ 
+    ├── bin/ # Compiled class files 
+    ├── main/ # Java source files │ 
+        ├── EmployeeGUIFX.java │ 
+        ├── Employee.java │ 
+        ├── EmployeeService.java │ 
+        ├── MockEmployeeRepository.java │ 
+        ├── EmployeeRepository.java │ 
+        └── style.css
 
 
 ## Compilation Instructions
 
-Make sure you're in the `SDD Project` directory, and run the following in your terminal:
+Make sure you're in the `SDD Project` directory, and run the following in your terminal to compile:
 
 ```bash
 javac \
@@ -31,6 +39,8 @@ javac \
 -d bin \
 main/*.java
 ```
+
+## Run Instructions
 
 Run the app with:
 
