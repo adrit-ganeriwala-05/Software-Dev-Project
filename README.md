@@ -18,15 +18,17 @@ This is a simple Employee Management System built using JavaFX. It allows users 
 
 ## Folder Structure
 
-SDD Project/  
-├── bin/                        # Compiled class files  
-├── main/                       # Java source files  
-│   ├── EmployeeGUIFX.java  
-│   ├── Employee.java  
-│   ├── EmployeeService.java  
-│   ├── MockEmployeeRepository.java  
-│   ├── EmployeeRepository.java  
-│   └── style.css  
+```text
+SDD Project/
+├── bin/                        # Compiled class files
+├── main/                       # Java source files
+│   ├── EmployeeGUIFX.java
+│   ├── Employee.java
+│   ├── EmployeeService.java
+│   ├── MockEmployeeRepository.java
+│   ├── EmployeeRepository.java
+│   └── style.css
+```
 
 ## Compilation Instructions
 
@@ -42,7 +44,7 @@ main/*.java
 
 ## Run Instructions
 
-Run the app with:
+Run app with:
 
 ```bash
 java \
