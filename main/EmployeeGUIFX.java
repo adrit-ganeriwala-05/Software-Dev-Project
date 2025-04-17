@@ -1,5 +1,8 @@
 package main;
 
+import java.io.File;
+import javafx.scene.text.Font;
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -19,6 +22,12 @@ public class EmployeeGUIFX extends Application {
      */
     @Override
     public void start(Stage primaryStage) {
+        
+        Font.loadFont(
+            new File("main/fonts/PixelfySans.ttf").toURI().toString(),
+            12
+        );
+
         // Setup mock data
         MockEmployeeRepository repo = new MockEmployeeRepository();
         service = new EmployeeService(repo);
@@ -37,7 +46,6 @@ public class EmployeeGUIFX extends Application {
         outputArea.setEditable(false);
         outputArea.setPrefHeight(600);
         outputArea.setPrefWidth(800);
-        outputArea.setStyle("-fx-font-family: 'Courier New'; -fx-font-size: 13px;");
 
         ScrollPane scrollPane = new ScrollPane(outputArea);
 

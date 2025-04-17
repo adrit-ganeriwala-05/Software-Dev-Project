@@ -3,3 +3,14 @@
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
+
+@font-face {
+    font-family: "PixelfySans";
+    src: url("fonts/PixelifySans.ttf");
+  }
+  
+  /* apply Roboto to all text in your app */
+  .root {
+    -fx-font-family: "PixelfySans";
+  }
+  
