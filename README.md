@@ -30,8 +30,8 @@ Features include:
 
 ```text
 SDD Project/
-├── bin/                             Compiled `.class` files
-├── lib/                             Third-party JARs
+├── bin/                            # Compiled `.class` files
+├── lib/                            # Third-party JARs
 │   └── mysql-connector-java.jar    # MySQL JDBC driver
 ├── main/                           # Java source files & resources
 │   ├── Employee.java
@@ -41,8 +41,8 @@ SDD Project/
 │   ├── MySQLEmployeeRepository.java
 │   ├── EmployeeGUI.java
 │   ├── EmployeeGUIFX.java
-│   ├── EmployeeManagementSystem.java   # console UI
-│   ├── EmployeeServiceTestMain.java    # service unit tests
+│   ├── EmployeeManagementSystem.java   # Console UI
+│   ├── EmployeeServiceTestMain.java    # Service unit tests
 │   └── style.css                       # JavaFX stylesheet
 └── README.md
 ```
