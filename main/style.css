@@ -1,0 +1,48 @@
+@font-face {
+  font-family: "PixelfySans";
+  src: url("fonts/PixelifySans.ttf");
+}
+
+.root {
+  -fx-font-family: "PixelfySans";
+  -fx-background-color: #fdf6f0;
+}
+
+/* Base button style */
+.button {
+  -fx-text-fill: #3a3a3a;
+  -fx-font-weight: bold;
+  -fx-background-radius: 8px;
+  -fx-padding: 10px;
+  -fx-font-size: 13px;
+  -fx-cursor: hand;
+  -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 3, 0.1, 0, 2);
+}
+
+.btn-pink    { -fx-background-color: #f8d7e2; }
+.btn-green   { -fx-background-color: #d7f8e2; }
+.btn-yellow  { -fx-background-color: #fff0b3; }
+.btn-blue    { -fx-background-color: #d7e3f8; }
+.btn-purple  { -fx-background-color: #e6ccf5; }
+.btn-peach   { -fx-background-color: #ffe5d9; }
+.btn-mint    { -fx-background-color: #e1f5d7; }
+
+.button:hover {
+  -fx-opacity: 0.85;
+}
+
+/* 📄 Text area styling */
+.text-area {
+  -fx-control-inner-background: #fff7f2;
+  -fx-text-fill: #4a4a4a;
+  -fx-font-family: "Courier New";
+  -fx-font-size: 13px;
+  -fx-border-color: transparent;
+  -fx-focus-color: transparent;
+  -fx-faint-focus-color: transparent;
+}
+
+/* 🧾 Scroll pane background */
+.scroll-pane {
+  -fx-background: #fdf6f0;
+}
