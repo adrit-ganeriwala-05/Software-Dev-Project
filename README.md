@@ -41,8 +41,9 @@ SDD Project/
 │   ├── MySQLEmployeeRepository.java
 │   ├── EmployeeGUI.java
 │   ├── EmployeeGUIFX.java
-│   ├── EmployeeManagementSystem.java   # Console UI
 │   ├── EmployeeServiceTestMain.java    # Service unit tests
 │   └── style.css                       # JavaFX stylesheet
-└── README.md
+├── README.md
+└── EmployeeManagementSystem.java   # Console UI
+
 ```
