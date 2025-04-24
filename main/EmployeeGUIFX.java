@@ -73,7 +73,7 @@ public class EmployeeGUIFX extends Application {
 
         Scene scene = new Scene(root, 800, 500);
 
-        // 🧪 Print to confirm the stylesheet loads
+        // Debug, print to confirm the stylesheet loads
         System.out.println(new File("main/style.css").toURI().toString());
 
         scene.getStylesheets().add(new File("main/style.css").toURI().toString());
@@ -199,7 +199,7 @@ public class EmployeeGUIFX extends Application {
 
             boolean success = service.logMonthlyPay(empId);
             if (success) {
-                outputArea.appendText("✅ Logged monthly pay for Employee ID " + empId + "\n");
+                outputArea.appendText("Logged monthly pay for Employee ID " + empId + "\n");
             } else {
                 showError("Employee not found or failed to log pay.");
             }

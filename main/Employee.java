@@ -1,15 +1,14 @@
-// Employee.java
 import java.time.LocalDate;
 
 public class Employee {
     private int empId;
     private String name;
-    private String lastName; // New
-    private String ssn;   // Stored without dashes
+    private String lastName;
+    private String ssn;
     private double salary;
     private String jobTitle;
     private String division;
-    private LocalDate hireDate; // New
+    private LocalDate hireDate;
 
     public Employee(int empId, String name, String lastName, String ssn, double salary, String jobTitle, String division, LocalDate hireDate) {
         this.empId = empId;
