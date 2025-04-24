@@ -1,24 +1,19 @@
-package main;
-
-
-// EmployeeService.java
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class EmployeeService {
     EmployeeRepository repository;
-    
+
     public EmployeeService(EmployeeRepository repository) {
         this.repository = repository;
     }
-    
-    // Search for employees by name, SSN or empId in string format
+
     public List<Employee> searchEmployee(String query) {
         return repository.findByQuery(query);
     }
-    
-    // Update employee's general data
+
     public boolean updateEmployeeData(int empId, String newName, String newSsn) {
         Optional<Employee> opt = repository.findByEmpId(empId);
         if (opt.isPresent()) {
@@ -30,26 +25,41 @@ public class EmployeeService {
         }
         return false;
     }
-    
-    // Increase salary by a percentage for employees within a given salary range
+
     public void updateEmployeeSalaryRange(double minSalary, double maxSalary, double percentageIncrease) {
         List<Employee> allEmployees = repository.findAll();
         List<Employee> eligibleEmployees = allEmployees.stream()
             .filter(e -> e.getSalary() >= minSalary && e.getSalary() < maxSalary)
             .collect(Collectors.toList());
-        
+
         for (Employee e : eligibleEmployees) {
             double newSalary = e.getSalary() * (1 + percentageIncrease / 100);
             e.setSalary(newSalary);
             repository.save(e);
         }
     }
-    
-    // Example report method: total pay by job title
+
     public double totalPayByJobTitle(String jobTitle) {
         return repository.findAll().stream()
                 .filter(e -> e.getJobTitle().equalsIgnoreCase(jobTitle))
                 .mapToDouble(Employee::getSalary)
                 .sum();
     }
+
+    // NEW: Calculate monthly pay
+    public double calculateMonthlyPay(int empId) {
+        Optional<Employee> opt = repository.findByEmpId(empId);
+        if (opt.isPresent()) {
+            return opt.get().getSalary() / 12.0;
+        }
+        return -1;
+    }
+
+    public boolean logMonthlyPay(int empId) {
+        if (repository instanceof MySQLEmployeeRepository sqlRepo) {
+            return sqlRepo.logMonthlyPay(empId);
+        }
+        return false;
+    }
+    
 }

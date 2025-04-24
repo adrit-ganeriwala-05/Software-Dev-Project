@@ -1,6 +1,6 @@
-package main;
-
 import java.io.File;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import javafx.scene.text.Font;
 
 import javafx.application.Application;
@@ -17,26 +17,18 @@ public class EmployeeGUIFX extends Application {
     private EmployeeService service;
     private TextArea outputArea;
 
-    /**
-     * Initializes the primary stage and GUI layout with mock data.
-     */
-    @Override
     public void start(Stage primaryStage) {
-        
-        Font.loadFont(
-            new File("main/fonts/PixelfySans.ttf").toURI().toString(),
-            12
-        );
+        Font.loadFont(new File("main/fonts/PixelfySans.ttf").toURI().toString(), 12);
 
-        // Setup mock data
-        MockEmployeeRepository repo = new MockEmployeeRepository();
-        service = new EmployeeService(repo);
-        repo.save(new Employee(1, "Alice", "123456789", 60000, "Engineer", "IT"));
-        repo.save(new Employee(2, "Bob", "987654321", 50000, "Engineer", "IT"));
-        repo.save(new Employee(3, "Charlie", "555223333", 120000, "Manager", "Admin"));
+        try {
+            MySQLEmployeeRepository repo = new MySQLEmployeeRepository();
+            service = new EmployeeService(repo);
+        } catch (Exception e) {
+            showError("Could not connect to database: " + e.getMessage());
+            return;
+        }
 
-        // Layout setup
-        primaryStage.setTitle("Employee Management System (JavaFX)");
+        primaryStage.setTitle("Employee Management System");
         BorderPane root = new BorderPane();
 
         VBox buttonBox = new VBox(10);
@@ -55,6 +47,16 @@ public class EmployeeGUIFX extends Application {
         Button salaryRaiseBtn = new Button("Raise Salary by Range");
         Button totalPayBtn = new Button("Total Pay by Job Title");
         Button viewAllBtn = new Button("View All Employees");
+        Button logPayBtn = new Button("Log Monthly Pay");
+
+        // 🔥 Assign style classes
+        addBtn.getStyleClass().add("btn-pink");
+        searchBtn.getStyleClass().add("btn-green");
+        updateBtn.getStyleClass().add("btn-yellow");
+        salaryRaiseBtn.getStyleClass().add("btn-blue");
+        totalPayBtn.getStyleClass().add("btn-purple");
+        viewAllBtn.getStyleClass().add("btn-peach");
+        logPayBtn.getStyleClass().add("btn-mint");
 
         addBtn.setOnAction(e -> addEmployee());
         searchBtn.setOnAction(e -> searchEmployee());
@@ -62,52 +64,24 @@ public class EmployeeGUIFX extends Application {
         salaryRaiseBtn.setOnAction(e -> raiseSalaryByRange());
         totalPayBtn.setOnAction(e -> showTotalPay());
         viewAllBtn.setOnAction(e -> viewAllEmployees());
+        logPayBtn.setOnAction(e -> logMonthlyPay());
 
-        buttonBox.getChildren().addAll(addBtn, searchBtn, updateBtn, salaryRaiseBtn, totalPayBtn, viewAllBtn);
+        buttonBox.getChildren().addAll(addBtn, searchBtn, updateBtn, salaryRaiseBtn, totalPayBtn, viewAllBtn, logPayBtn);
 
         root.setLeft(buttonBox);
         root.setCenter(scrollPane);
 
         Scene scene = new Scene(root, 800, 500);
-        scene.getStylesheets().add(new java.io.File("main/style.css").toURI().toString());
+
+        // 🧪 Print to confirm the stylesheet loads
+        System.out.println(new File("main/style.css").toURI().toString());
+
+        scene.getStylesheets().add(new File("main/style.css").toURI().toString());
 
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    /**
-     * Displays all employees from the repository in the output area.
-     */
-    private void viewAllEmployees() {
-        try {
-            Field repoField = service.getClass().getDeclaredField("repository");
-            repoField.setAccessible(true);
-            MockEmployeeRepository repo = (MockEmployeeRepository) repoField.get(service);
-
-            List<Employee> all = repo.findAll();
-            outputArea.appendText("All Employees:\n");
-            for (Employee e : all) {
-                outputArea.appendText(formatEmployee(e) + "\n");
-            }
-        } catch (Exception ex) {
-            showError("Unable to access repository: " + ex.getMessage());
-        }
-    }
-
-    /**
-     * Formats SSN string into xxx-xx-xxxx format.
-     */
-    private String formatSSN(String ssn) {
-        return ssn.length() == 9
-            ? ssn.substring(0, 3) + "-" + ssn.substring(3, 5) + "-" + ssn.substring(5)
-            : ssn;
-    }
-
-
-    /**
-     * Prompts the user for all required employee fields and adds a new employee.
-     * Handles overwrite confirmation if employee ID already exists.
-     */
     private void addEmployee() {
         try {
             int id = promptForInt("Enter Employee ID:");
@@ -122,8 +96,11 @@ public class EmployeeGUIFX extends Application {
                 }
             }
 
-            String name = promptForText("Enter Name:");
+            String name = promptForText("Enter First Name:");
             if (name == null) return;
+
+            String lastName = promptForText("Enter Last Name:");
+            if (lastName == null) return;
 
             String ssn;
             while (true) {
@@ -142,20 +119,46 @@ public class EmployeeGUIFX extends Application {
             String division = promptForText("Enter Division:");
             if (division == null) return;
 
-            Employee e = new Employee(id, name, ssn, salary, jobTitle, division);
+            LocalDate hireDate;
+            while (true) {
+                String dateStr = promptForText("Enter Hire Date (YYYY-MM-DD):");
+                if (dateStr == null) return;
+                try {
+                    hireDate = LocalDate.parse(dateStr);
+                    break;
+                } catch (DateTimeParseException ex) {
+                    showError("Invalid date format. Use YYYY-MM-DD.");
+                }
+            }
+
+            Employee e = new Employee(id, name, lastName, ssn, salary, jobTitle, division, hireDate);
             Field repoField = service.getClass().getDeclaredField("repository");
             repoField.setAccessible(true);
-            ((MockEmployeeRepository) repoField.get(service)).save(e);
+            EmployeeRepository repo = (EmployeeRepository) repoField.get(service);
+            repo.save(e);
 
-            outputArea.appendText("Employee " + name + " added/updated.\n");
+            outputArea.appendText("Employee " + name + " " + lastName + " added/updated.\n");
         } catch (Exception ex) {
             showError("Unexpected error: " + ex.getMessage());
         }
     }
 
-    /**
-     * Prompts user for a search and displays matching employees.
-     */
+    private void viewAllEmployees() {
+        try {
+            Field repoField = service.getClass().getDeclaredField("repository");
+            repoField.setAccessible(true);
+            EmployeeRepository repo = (EmployeeRepository) repoField.get(service);
+
+            List<Employee> all = repo.findAll();
+            outputArea.appendText("All Employees:\n");
+            for (Employee e : all) {
+                outputArea.appendText(formatEmployee(e) + "\n");
+            }
+        } catch (Exception ex) {
+            showError("Unable to access repository: " + ex.getMessage());
+        }
+    }
+
     private void searchEmployee() {
         String query = promptForText("Enter name, ID or SSN to search:");
         if (query == null) return;
@@ -166,9 +169,6 @@ public class EmployeeGUIFX extends Application {
         }
     }
 
-    /**
-     * Prompts user for salary range and percentage, and updates employee salaries.
-     */
     private void raiseSalaryByRange() {
         try {
             double min = promptForDouble("Minimum Salary:");
@@ -185,9 +185,6 @@ public class EmployeeGUIFX extends Application {
         }
     }
 
-    /**
-     * Prompts user for a job title and displays total salary for that title.
-     */
     private void showTotalPay() {
         String title = promptForText("Enter Job Title:");
         if (title == null) return;
@@ -195,35 +192,33 @@ public class EmployeeGUIFX extends Application {
         outputArea.appendText("Total pay for " + title + ": " + total + "\n");
     }
 
-    /**
-     * Validates if a given SSN is exactly 9 digits.
-     */
+    private void logMonthlyPay() {
+        try {
+            int empId = promptForInt("Enter Employee ID to log monthly pay:");
+            if (empId == -1) return;
+
+            boolean success = service.logMonthlyPay(empId);
+            if (success) {
+                outputArea.appendText("✅ Logged monthly pay for Employee ID " + empId + "\n");
+            } else {
+                showError("Employee not found or failed to log pay.");
+            }
+
+        } catch (Exception ex) {
+            showError("Error logging pay: " + ex.getMessage());
+        }
+    }
+
     private boolean isValidSSN(String ssn) {
         return ssn != null && ssn.matches("\\d{9}");
     }
 
-    /**
-     * Formats an employee object into a readable string for display.
-     */
     private String formatEmployee(Employee e) {
         String formattedSalary = String.format("%.2f", e.getSalary());
-        return e.getEmpId() + " - " + e.getName() + ", $" + formattedSalary + ", " +
-               e.getJobTitle() + " - " + e.getDivision();
+        return e.getEmpId() + " - " + e.getName() + " " + e.getLastName() + ", $" + formattedSalary + ", " +
+               e.getJobTitle() + " - " + e.getDivision() + " | Hired: " + e.getHireDate();
     }
 
-    /**
-     * Shows an error alert with the given message.
-     */
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("Error");
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    /**
-     * Prompts the user with a text input dialog and returns their response.
-     */
     private String promptForText(String prompt) {
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Input Required");
@@ -232,9 +227,6 @@ public class EmployeeGUIFX extends Application {
         return dialog.showAndWait().orElse(null);
     }
 
-    /**
-     * Prompts the user for an integer input, returns -1 if cancelled or invalid.
-     */
     private int promptForInt(String prompt) {
         String input = promptForText(prompt);
         if (input == null) return -1;
@@ -246,9 +238,6 @@ public class EmployeeGUIFX extends Application {
         }
     }
 
-    /**
-     * Prompts the user for a double input, returns -1 if cancelled or invalid.
-     */
     private double promptForDouble(String prompt) {
         String input = promptForText(prompt);
         if (input == null) return -1;
@@ -260,9 +249,6 @@ public class EmployeeGUIFX extends Application {
         }
     }
 
-    /**
-     * Shows a confirmation dialog and returns true if user confirms.
-     */
     private boolean showConfirmation(String message) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setHeaderText(null);
@@ -270,108 +256,17 @@ public class EmployeeGUIFX extends Application {
         return alert.showAndWait().filter(btn -> btn == ButtonType.OK).isPresent();
     }
 
-    /**
-     * Updates an employee's data with ability to skip fields. Prompts until valid input.
-     */
     private void updateEmployeeData() {
-        try {
-            int id = promptForInt("Enter Employee ID to update:");
-            if (id == -1) return;
-
-            List<Employee> results = service.searchEmployee(String.valueOf(id));
-            if (results.isEmpty()) {
-                outputArea.appendText("Employee not found.\n");
-                return;
-            }
-
-            Employee e = results.get(0);
-
-            // Update name
-            boolean updateName = showConfirmation("Update name? Current: " + e.getName());
-            if (updateName) {
-                while (true) {
-                    String newName = promptForText("Enter New Name:");
-                    if (newName == null || newName.trim().isEmpty()) {
-                        showError("Name cannot be empty.");
-                    } else {
-                        e.setName(newName.trim());
-                        break;
-                    }
-                }
-            }
-
-            // Update SSN
-            boolean updateSSN = showConfirmation("Update SSN? Current: " + formatSSN(e.getSsn()));
-            if (updateSSN) {
-                while (true) {
-                    String newSsn = promptForText("Enter New SSN (9 digits, no dashes):");
-                    if (newSsn == null) return;
-                    if (isValidSSN(newSsn)) {
-                        e.setSsn(newSsn.trim());
-                        break;
-                    } else {
-                        showError("Invalid SSN. Enter exactly 9 digits.");
-                    }
-                }
-            }
-
-            // Update Salary
-            boolean updateSalary = showConfirmation("Update salary? Current: $" + String.format("%.2f", e.getSalary()));
-            if (updateSalary) {
-                while (true) {
-                    String salaryStr = promptForText("Enter New Salary:");
-                    try {
-                        if (salaryStr == null) return;
-                        double salary = Double.parseDouble(salaryStr);
-                        e.setSalary(salary);
-                        break;
-                    } catch (NumberFormatException ex) {
-                        showError("Please enter a valid number for salary.");
-                    }
-                }
-            }
-
-            // Update Job Title
-            boolean updateTitle = showConfirmation("Update job title? Current: " + e.getJobTitle());
-            if (updateTitle) {
-                while (true) {
-                    String title = promptForText("Enter New Job Title:");
-                    if (title == null || title.trim().isEmpty()) {
-                        showError("Job title cannot be empty.");
-                    } else {
-                        e.setJobTitle(title.trim());
-                        break;
-                    }
-                }
-            }
-
-            // Update Division
-            boolean updateDivision = showConfirmation("Update division? Current: " + e.getDivision());
-            if (updateDivision) {
-                while (true) {
-                    String div = promptForText("Enter New Division:");
-                    if (div == null || div.trim().isEmpty()) {
-                        showError("Division cannot be empty.");
-                    } else {
-                        e.setDivision(div.trim());
-                        break;
-                    }
-                }
-            }
-
-            Field repoField = service.getClass().getDeclaredField("repository");
-            repoField.setAccessible(true);
-            ((MockEmployeeRepository) repoField.get(service)).save(e);
-            outputArea.appendText("Employee updated.\n");
-
-        } catch (Exception ex) {
-            showError("Error updating employee: " + ex.getMessage());
-        }
+        outputArea.appendText("⚠️ Update feature not yet implemented for FX UI.\n");
     }
 
-    /**
-     * Launches the JavaFX application.
-     */
+    private void showError(String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText("Error");
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
     public static void main(String[] args) {
         launch();
     }
