@@ -46,4 +46,27 @@ SDD Project/
 ├── README.md
 └── EmployeeManagementSystem.java   # Console UI
 
+## Compilation Instructions
+ 
+ Make sure you're in the `SDD Project` directory, and run the following in your terminal to compile:
+ 
+ ```bash
+ javac \
+ --module-path ~/Desktop/javafx-sdk-17.0.14/lib \
+ --add-modules javafx.controls,javafx.graphics \
+ -d bin \
+ main/*.java
+ ```
+ 
+ ## Run Instructions
+ 
+ Run app with:
+ 
+ ```bash
+ java \
+ --module-path ~/Desktop/javafx-sdk-17.0.14/lib \
+ --add-modules javafx.controls,javafx.graphics \
+ -cp bin \
+ main.EmployeeGUIFX
+
 ```
