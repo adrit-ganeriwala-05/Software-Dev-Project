@@ -45,7 +45,7 @@ SDD Project/
 │   └── style.css                       # JavaFX stylesheet
 ├── README.md
 └── EmployeeManagementSystem.java   # Console UI
-
+```
 ## Compilation Instructions
  
  Make sure you're in the `SDD Project` directory, and run the following in your terminal to compile:
