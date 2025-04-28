@@ -63,24 +63,12 @@ SDD Project/
  Run app with:
  
  ```bash
- java \
- --module-path ~/Desktop/javafx-sdk-17.0.14/lib \
- --add-modules javafx.controls,javafx.graphics \
- -cp bin \
- main.EmployeeGUIFX
+export PATH_TO_FX=~/Desktop/javafx-sdk-17.0.14/lib
 
-```
-## Testing Instuctions
-Compile tests with:
-```bash
-javac \
-  -cp "lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar:bin" \
-  -d bin \
-  main/EmployeeServiceTest.java
-```
-Run tests with:
-```bash
 java \
-  -cp "lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar:bin" \
-  org.junit.runner.JUnitCore main.EmployeeServiceTest
+  --module-path "$PATH_TO_FX" \
+  --add-modules javafx.controls,javafx.graphics \
+  -cp "bin:lib/mysql-connector-j-9.3.0.jar" \
+  EmployeeGUIFX
+
 ```

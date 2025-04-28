@@ -7,7 +7,11 @@ import java.util.*;
 public class MySQLEmployeeRepository implements EmployeeRepository {
     private static final String URL = "jdbc:mysql://localhost:3306/employeeData";
     private static final String USER = "root";
-    private static final String PASSWORD = "Imraniman2017";
+
+    // Change this to your local password for DB
+    // Also uses: PASSWORD = "Imraniman2017"
+    
+    private static final String PASSWORD = "Dillard082993";
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);

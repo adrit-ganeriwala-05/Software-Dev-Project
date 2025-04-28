@@ -16,4 +16,5 @@ public interface EmployeeRepository {
 
     // Log monthly pay for a specific employee
     boolean logMonthlyPay(int empId);
+
 }
