@@ -1,4 +1,3 @@
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,7 +45,7 @@ public class EmployeeService {
                 .sum();
     }
 
-    // NEW: Calculate monthly pay
+    // Calculate monthly pay
     public double calculateMonthlyPay(int empId) {
         Optional<Employee> opt = repository.findByEmpId(empId);
         if (opt.isPresent()) {

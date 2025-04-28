@@ -14,6 +14,6 @@ public interface EmployeeRepository {
     // Retrieve all employees (for report generation)
     List<Employee> findAll();
 
-    // NEW: Log monthly pay for a specific employee
+    // Log monthly pay for a specific employee
     boolean logMonthlyPay(int empId);
 }

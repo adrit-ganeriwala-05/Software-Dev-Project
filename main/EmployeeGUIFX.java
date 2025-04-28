@@ -1,6 +1,7 @@
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+
 import javafx.scene.text.Font;
 
 import javafx.application.Application;
@@ -49,7 +50,7 @@ public class EmployeeGUIFX extends Application {
         Button viewAllBtn = new Button("View All Employees");
         Button logPayBtn = new Button("Log Monthly Pay");
 
-        // 🔥 Assign style classes
+        // Assign style classes
         addBtn.getStyleClass().add("btn-pink");
         searchBtn.getStyleClass().add("btn-green");
         updateBtn.getStyleClass().add("btn-yellow");

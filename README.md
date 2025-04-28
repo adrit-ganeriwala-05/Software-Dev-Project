@@ -70,3 +70,17 @@ SDD Project/
  main.EmployeeGUIFX
 
 ```
+## Testing Instuctions
+Compile tests with:
+```bash
+javac \
+  -cp "lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar:bin" \
+  -d bin \
+  main/EmployeeServiceTest.java
+```
+Run tests with:
+```bash
+java \
+  -cp "lib/junit-4.13.2.jar:lib/hamcrest-core-1.3.jar:bin" \
+  org.junit.runner.JUnitCore main.EmployeeServiceTest
+```
