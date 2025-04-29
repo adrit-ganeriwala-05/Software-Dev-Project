@@ -72,3 +72,10 @@ java \
   EmployeeGUIFX
 
 ```
+## Testing
+Run tests with individual commands in terminal:
+```bash
+java -ea -cp bin:lib/mysql-connector-j-9.3.0.jar EmployeeTest
+java -ea -cp bin EmployeeServiceTest
+java -ea -cp bin:lib/mysql-connector-j-9.3.0.jar MySQLEmployeeRepositoryTest
+```
