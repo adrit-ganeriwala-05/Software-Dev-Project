@@ -30,18 +30,24 @@ Features include:
 
 ```text
 SDD Project/
-├── bin/                            # Compiled `.class` files
-├── lib/                            # Third-party JARs
-│   └── mysql-connector-java.jar    # MySQL JDBC driver
-├── main/                           # Java source files & resources
-│   ├── Employee.java
+├── bin/                          # Compiled `.class` files
+├── lib/                          # Third-party JARs
+  ├── javafx-sdk-17.0.1           # JavaFX folder
+  ├── hamcrest-core-1.3.jar
+  ├──  junit-4.13.2.jar           # JUnit for testing
+  └── mysql-connector-java.jar    # MySQL JDBC driver
+
+├── main/                         # Java source files & resources
+│   ├── Employee.java    
+│   ├── EmployeeTest.java         # Test for Employee.java
+│   ├── EmployeeGUIFX.java
 │   ├── EmployeeRepository.java
 │   ├── EmployeeService.java
-│   ├── MockEmployeeRepository.java
-│   ├── MySQLEmployeeRepository.java
-│   ├── EmployeeGUI.java
-│   ├── EmployeeGUIFX.java
+│   ├── EmployeeServiceTest.java        # Test for EmployeeService.java
 │   ├── EmployeeServiceTestMain.java    # Service unit tests
+│   ├── MySQLEmployeeRepository.java
+│   ├── MySQLEmployeeRepositoryTest.java  # Test for MySQLEmployeeRepository.java
+│   ├── MockEmployeeRepository.java
 │   └── style.css                       # JavaFX stylesheet
 ├── README.md
 └── EmployeeManagementSystem.java   # Console UI
