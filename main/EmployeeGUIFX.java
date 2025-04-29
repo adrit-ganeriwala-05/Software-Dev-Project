@@ -4,6 +4,9 @@ import java.time.format.DateTimeParseException;
 import java.lang.reflect.Field;
 import java.util.List;
 
+import javafx.scene.text.Font;
+
+
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -78,6 +81,10 @@ public class EmployeeGUIFX extends Application {
         root.setCenter(new ScrollPane(outputArea));
 
         Scene scene = new Scene(root, 800, 500);
+
+        // print to confirm the stylesheet loads
+        System.out.println(new File("main/style.css").toURI().toString());
+
         // load your CSS
         scene.getStylesheets().add(
           new File("main/style.css").toURI().toString()
@@ -94,41 +101,42 @@ public class EmployeeGUIFX extends Application {
 
             List<Employee> existing = service.searchEmployee(String.valueOf(id));
             if (!existing.isEmpty()) {
-                if (!showConfirmation("Employee ID " + id + " exists. Overwrite?")) {
+                if (!showConfirmation("An employee with ID " + id + " already exists. Overwrite?")) {
                     outputArea.appendText("Add canceled.\n");
                     return;
                 }
             }
 
-            String name      = promptForText("First Name:");
+            String name      = promptForText("Enter first name:");
             if (name == null) return;
-            String lastName  = promptForText("Last Name:");
+            
+            String lastName  = promptForText("Enter last name:");
             if (lastName == null) return;
 
             String ssn;
             while (true) {
-                ssn = promptForText("SSN (9 digits):");
+                ssn = promptForText("Enter SSN (9 digits, no dashes):");
                 if (ssn == null) return;
                 if (isValidSSN(ssn)) break;
-                showError("SSN must be 9 digits.");
+                showError("SSN must be exactly 9 digits.");
             }
 
-            double salary    = promptForDouble("Salary:");
+            double salary    = promptForDouble("Enter salary:");
             if (salary < 0) return;
-            String jobTitle  = promptForText("Job Title:");
+            String jobTitle  = promptForText("Enter job title:");
             if (jobTitle == null) return;
-            String division  = promptForText("Division:");
+            String division  = promptForText("Enter division:");
             if (division == null) return;
 
             LocalDate hireDate;
             while (true) {
-                String ds = promptForText("Hire Date (YYYY-MM-DD):");
+                String ds = promptForText("Enter hire date (YYYY-MM-DD):");
                 if (ds == null) return;
                 try {
                     hireDate = LocalDate.parse(ds);
                     break;
                 } catch (DateTimeParseException ex) {
-                    showError("Invalid date format.");
+                    showError("Invalid date format. Use YYYY-MM-DD.");
                 }
             }
 
@@ -173,15 +181,15 @@ public class EmployeeGUIFX extends Application {
 
     private void raiseSalaryByRange() {
         try {
-            double min = promptForDouble("Min Salary:");
+            double min = promptForDouble("Min. Salary:");
             if (min < 0) return;
-            double max = promptForDouble("Max Salary:");
+            double max = promptForDouble("Max. Salary:");
             if (max < 0) return;
             double pct = promptForDouble("Increase %:");
             if (pct < 0) return;
             service.updateEmployeeSalaryRange(min, max, pct);
             outputArea.appendText(
-              "Raised salaries in ["+min+"-"+max+"] by "+pct+"%\n"
+              "Raised salaries in range ["+min+"-"+max+"] by "+pct+"%\n"
             );
         } catch (Exception ex) {
             showError("Raise error: " + ex.getMessage());
@@ -189,7 +197,7 @@ public class EmployeeGUIFX extends Application {
     }
 
     private void showTotalPay() {
-        String title = promptForText("Job Title for total pay:");
+        String title = promptForText("Enter a job title to calculate total pay:");
         if (title == null) return;
         double total = service.totalPayByJobTitle(title);
         outputArea.appendText(
@@ -313,7 +321,7 @@ public class EmployeeGUIFX extends Application {
         }
     }
 
-    // ---- helpers ----
+    // helpers
 
     private String formatEmployee(Employee e) {
         return String.format(
